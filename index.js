@@ -87,7 +87,7 @@ function Bankai (entry, opts) {
   // Insert nodes into the graph.
   this.graph.node('assets', assetsNode)
   // this.graph.node('document', [ 'manifest:color', 'style:bundle', 'assets:favicons', 'script:bundle' ], documentNode)
-  this.graph.node('documents', [ 'manifest:color', 'style:bundle', 'scripts:bundle', 'reload:bundle' ], documentNode)
+  this.graph.node('documents', [ 'assets:list', 'manifest:color', 'style:bundle', 'scripts:bundle', 'reload:bundle' ], documentNode)
   this.graph.node('manifest', manifestNode)
   this.graph.node('scripts', scriptNode)
   this.graph.node('reload', reloadNode)
@@ -182,14 +182,14 @@ Bankai.prototype.serviceWorker = function (cb) {
   })
 }
 
-Bankai.prototype.assets = function (edgeName, cb) {
-  assert.equal(typeof edgeName, 'string')
+Bankai.prototype.assets = function (filename, cb) {
+  assert.equal(typeof filename, 'string')
   assert.equal(typeof cb, 'function')
   var stepName = 'assets'
   var self = this
   this.queue[stepName].add(function () {
-    var data = self.graph.data[stepName][edgeName]
-    if (!data) return cb(new Error('bankai.asset: could not find a file for ' + edgeName))
+    var data = self.graph.metadata.assets[filename]
+    if (!data) return cb(new Error('bankai.asset: could not find a file for ' + filename))
     cb(null, data)
   })
 }
